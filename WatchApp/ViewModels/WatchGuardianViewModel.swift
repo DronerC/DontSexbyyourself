@@ -54,7 +54,7 @@ final class WatchGuardianViewModel: ObservableObject {
     }
 
     private func handleDetection() {
-        guard state == .monitoring else { return }
+        guard case .monitoring = state else { return }
         showDetectionPrompt = true
         state = .awaitingConfirmation
     }
