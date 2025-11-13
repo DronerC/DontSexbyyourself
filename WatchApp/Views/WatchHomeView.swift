@@ -4,19 +4,27 @@ struct WatchHomeView: View {
     @ObservedObject var viewModel: WatchGuardianViewModel
 
     var body: some View {
-        VStack(spacing: 12) {
-            if case .tracking = viewModel.state {
-                trackingView
-            } else {
-                summaryView
-                Button(action: viewModel.toggleMonitoring) {
-                    Text(viewModelButtonTitle)
-                        .frame(maxWidth: .infinity)
+        ZStack {
+            LinearGradient(colors: [.pink, .purple, .blue], startPoint: .topLeading, endPoint: .bottomTrailing)
+                .ignoresSafeArea()
+
+            VStack(spacing: 16) {
+                if case .tracking = viewModel.state {
+                    trackingView
+                } else {
+                    summaryView
+                    Button(action: viewModel.toggleMonitoring) {
+                        Text(viewModelButtonTitle)
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.yellow)
                 }
-                .buttonStyle(.borderedProminent)
             }
+            .padding()
         }
-        .padding()
         .sheet(isPresented: $viewModel.showDetectionPrompt) {
             detectionSheet
         }
@@ -36,53 +44,67 @@ struct WatchHomeView: View {
 
     private var detectionSheet: some View {
         VStack(spacing: 12) {
-            Text("检测到重复动作")
+            Text("⚡️ 检测到重复动作")
                 .font(.headline)
-            Text("确定要这么做吗？")
+            Text("🤔 确定要这么做吗？")
                 .multilineTextAlignment(.center)
             HStack {
-                Button("不是") {
+                Button("🙅‍♂️ 不是") {
                     viewModel.dismissDetection()
                 }
-                Button("记录") {
+                Button("✅ 记录") {
                     viewModel.confirmStart()
                 }
-                .tint(.green)
+                .tint(.mint)
             }
         }
         .padding()
+        .background(LinearGradient(colors: [.purple.opacity(0.8), .blue.opacity(0.8)], startPoint: .top, endPoint: .bottom))
+        .foregroundStyle(.white)
     }
 
     private var trackingView: some View {
-        VStack(spacing: 8) {
-            Text("行为进行中")
-                .font(.headline)
-            Text("时长：\(formattedDuration(viewModel.elapsedTime))")
-            Text("重复次数：\(viewModel.currentRepetitionCount)")
-            Text("平均频率：\(formattedFrequency(viewModel.currentFrequencyPerMinute))")
-            Button("结束") {
+        VStack(spacing: 10) {
+            Text("🔥 行为进行中")
+                .font(.title3)
+                .fontWeight(.bold)
+            Text("⏱️ 时长：\(formattedDuration(viewModel.elapsedTime))")
+            Text("🔁 重复次数：\(viewModel.currentRepetitionCount)")
+            Text("🎶 平均频率：\(formattedFrequency(viewModel.currentFrequencyPerMinute))")
+            Button("🛑 结束") {
                 viewModel.endCurrentSession()
             }
             .buttonStyle(.borderedProminent)
+            .tint(.orange)
         }
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(.ultraThinMaterial.opacity(0.4), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .foregroundStyle(.white)
     }
 
     private var summaryView: some View {
-        VStack(spacing: 4) {
-            VStack(spacing: 4) {
-                Text("今天")
+        VStack(spacing: 12) {
+            VStack(spacing: 6) {
+                Text("🌞 今天")
                     .font(.headline)
                 Text("\(viewModel.todaysCount) 次")
-                    .font(.title2)
+                    .font(.system(size: 32, weight: .heavy))
             }
-            VStack(spacing: 4) {
-                Text("本周")
+            VStack(spacing: 6) {
+                Text("🎯 本周")
                 Text("\(viewModel.weeklyCount) 次")
+                    .font(.title3)
+                    .fontWeight(.semibold)
             }
-            Text("已坚持 \(viewModel.streakText)")
+            Text("🏆 已坚持 \(viewModel.streakText)")
                 .font(.footnote)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.white.opacity(0.8))
         }
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(.ultraThinMaterial.opacity(0.4), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .foregroundStyle(.white)
     }
 
     private func formattedDuration(_ duration: TimeInterval) -> String {
@@ -113,26 +135,29 @@ private struct SessionSummaryView: View {
     }
 
     var body: some View {
-        VStack(spacing: 12) {
-            Text("本次总结")
+        VStack(spacing: 14) {
+            Text("🌈 本次总结")
                 .font(.headline)
-            Text("时长：\(formatter.string(from: summary.duration) ?? "0:00")")
-            Text("重复次数：\(summary.repetitionCount)")
+            Text("⏳ 时长：\(formatter.string(from: summary.duration) ?? "0:00")")
+            Text("🔁 重复次数：\(summary.repetitionCount)")
             if summary.averageFrequencyPerMinute > 0 {
-                Text("平均频率：\(String(format: "%.1f 次/分钟", summary.averageFrequencyPerMinute))")
+                Text("🎵 平均频率：\(String(format: "%.1f 次/分钟", summary.averageFrequencyPerMinute))")
             } else {
-                Text("平均频率：-")
+                Text("🎵 平均频率：-")
             }
             Text(summary.feedback)
                 .font(.body)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(feedbackColor)
-            Button("好的") {
+            Button("✨ 好的") {
                 dismiss()
             }
             .buttonStyle(.borderedProminent)
+            .tint(.yellow)
         }
         .padding()
+        .background(LinearGradient(colors: [.pink, .orange], startPoint: .topLeading, endPoint: .bottomTrailing))
+        .foregroundStyle(.white)
     }
 
     private var feedbackColor: Color {
