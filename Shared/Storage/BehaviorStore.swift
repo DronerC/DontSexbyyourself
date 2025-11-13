@@ -32,12 +32,19 @@ public final class BehaviorStore: ObservableObject {
         sessions = updated
     }
 
-    public func endSession(id: BehaviorSession.ID, at date: Date = Date(), mood: BehaviorSession.Mood? = nil, trigger: BehaviorSession.Trigger? = nil) {
+    public func endSession(id: BehaviorSession.ID,
+                           at date: Date = Date(),
+                           mood: BehaviorSession.Mood? = nil,
+                           trigger: BehaviorSession.Trigger? = nil,
+                           repetitionCount: Int = 0,
+                           averageFrequencyPerMinute: Double? = nil) {
         guard let index = sessions.firstIndex(where: { $0.id == id }) else { return }
         var session = sessions[index]
         session.endDate = date
         session.mood = mood
         session.trigger = trigger
+        session.repetitionCount = repetitionCount
+        session.averageFrequencyPerMinute = averageFrequencyPerMinute
         sessions[index] = session
     }
 
@@ -50,6 +57,10 @@ public final class BehaviorStore: ObservableObject {
         sessionStorage.delete()
         settingsStorage.delete()
         settings = GuardianSettings()
+    }
+
+    public func replaceAllSessions(_ newSessions: [BehaviorSession]) {
+        sessions = newSessions.sorted { $0.startDate < $1.startDate }
     }
 
     public var weeklyCount: Int {

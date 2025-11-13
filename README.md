@@ -4,10 +4,12 @@
 
 ## 功能概览
 
-- **Apple Watch 守护模式**：`WatchGuardianViewModel` + `GuardianMotionDetector` 持续监听重复动作并在侦测到疑似行为时弹出温和提醒，用户可选择记录或忽略。
-- **行为会话记录**：`BehaviorStore` 负责管理会话列表、时长、情绪与诱因标签，同时支持一键清除。
+- **Apple Watch 守护模式**：`WatchGuardianViewModel` + `GuardianMotionDetector` 持续监听重复动作，在侦测到疑似行为时伴随震动弹出温和提醒，用户可选择记录或忽略。
+- **行为会话记录**：`BehaviorStore` 负责管理会话列表、时长、情绪与诱因标签，同时支持一键清除，并记录重复次数与平均节奏。
+- **实时同步**：`SessionSyncManager` 基于 `WatchConnectivity` 将手表记录实时写回 iPhone，保证两端数据一致。
 - **iPhone 仪表盘**：`DashboardView` 展示本周/本月次数、平均间隔、最长空窗，以及最近 7 天趋势图和详细列表。
 - **目标与提醒设置**：`SettingsView` 支持配置每周次数与冷静期目标，并切换夜间提醒策略。
+- **行为总结反馈**：手表端记录过程中实时显示时长、频率与重复次数，结束时生成总结与节奏建议，帮助用户温和自我管理。
 
 ## 目录结构
 
@@ -41,6 +43,6 @@ WatchApp/
 
 ## 下一步可扩展方向
 
-- 使用 `WatchConnectivity` 与 `CoreData`/`AppStorage` 做更可靠的跨设备同步。
 - 引入本地化 Core ML 模型降低误报。
 - Watch 端加入误报反馈与冷静期替代建议组件。
+- 扩展 iPhone 端情绪/诱因分析图表与更丰富的行为洞察。

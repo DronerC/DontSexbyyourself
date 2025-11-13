@@ -49,6 +49,14 @@ private struct SessionRow: View {
                 Text("诱因：\(trigger.label)")
                     .font(.subheadline)
             }
+            if session.repetitionCount > 0 {
+                Text("重复次数：\(session.repetitionCount)")
+                    .font(.subheadline)
+            }
+            if let frequency = session.averageFrequencyPerMinute {
+                Text(String(format: "平均频率：%.1f 次/分钟", frequency))
+                    .font(.subheadline)
+            }
             Button(role: .destructive, action: onDelete) {
                 Text("删除记录")
             }

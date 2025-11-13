@@ -7,13 +7,23 @@ public struct BehaviorSession: Identifiable, Codable, Hashable {
     public var endDate: Date?
     public var mood: Mood?
     public var trigger: Trigger?
+    public var repetitionCount: Int
+    public var averageFrequencyPerMinute: Double?
 
-    public init(id: UUID = UUID(), startDate: Date, endDate: Date? = nil, mood: Mood? = nil, trigger: Trigger? = nil) {
+    public init(id: UUID = UUID(),
+                startDate: Date,
+                endDate: Date? = nil,
+                mood: Mood? = nil,
+                trigger: Trigger? = nil,
+                repetitionCount: Int = 0,
+                averageFrequencyPerMinute: Double? = nil) {
         self.id = id
         self.startDate = startDate
         self.endDate = endDate
         self.mood = mood
         self.trigger = trigger
+        self.repetitionCount = repetitionCount
+        self.averageFrequencyPerMinute = averageFrequencyPerMinute
     }
 
     public var duration: TimeInterval? {

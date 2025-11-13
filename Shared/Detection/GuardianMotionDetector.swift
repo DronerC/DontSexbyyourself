@@ -15,7 +15,7 @@ public final class GuardianMotionDetector: ObservableObject {
     @Published public private(set) var state: State = .idle
     @Published public private(set) var lastDetectionDate: Date?
 
-    private let subject = PassthroughSubject<Void, Never>()
+    private let subject = PassthroughSubject<Double, Never>()
     private var cancellable: AnyCancellable?
     #if os(watchOS)
     private var motionManager: CMMotionManager?
@@ -38,7 +38,7 @@ public final class GuardianMotionDetector: ObservableObject {
             if magnitude > 1.2 {
                 self.state = .possibleEvent
                 self.lastDetectionDate = Date()
-                self.subject.send()
+                self.subject.send(magnitude)
             }
         }
         motionManager = manager
@@ -52,10 +52,10 @@ public final class GuardianMotionDetector: ObservableObject {
             guard let self else { return }
             self.state = .possibleEvent
             self.lastDetectionDate = Date()
-            self.subject.send()
+            self.subject.send(1.0)
         }
         cancellable = AnyCancellable {}
-    #endif
+#endif
     }
 
     public func stopMonitoring() {
@@ -68,7 +68,7 @@ public final class GuardianMotionDetector: ObservableObject {
         #endif
     }
 
-    public var detectionPublisher: AnyPublisher<Void, Never> {
+    public var detectionPublisher: AnyPublisher<Double, Never> {
         subject.eraseToAnyPublisher()
     }
 }
